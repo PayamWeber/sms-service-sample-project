@@ -4,6 +4,7 @@ namespace App;
 
 use App\NotificationSenders\EmailNotification;
 use App\NotificationSenders\KavenegarNotification;
+use App\NotificationSenders\QasedakNotification;
 use App\Repositories\Enums\NotificationLogStatus;
 use App\Repositories\Enums\NotificationLogType;
 use App\Repositories\NotificationLogRepository;
@@ -37,7 +38,8 @@ class MessageConsumer
 
             // Get Notification sender
             $notificationSender = match ($_ENV['NOTIFICATION_DRIVER'] ?? 'kavenegar') {
-                'kavenegar' => new KavenegarNotification()
+                'kavenegar' => new KavenegarNotification(),
+                'qasedak' => new QasedakNotification(),
             };
 
             // Send notification
@@ -48,6 +50,7 @@ class MessageConsumer
 
             if(!$send){
                 $this->fail($message, $decodedData);
+                return;
             }
 
             $this->success($message, $decodedData);

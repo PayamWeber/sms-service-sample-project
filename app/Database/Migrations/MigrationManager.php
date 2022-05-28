@@ -51,6 +51,11 @@ class MigrationManager
               `message` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
               `sent_at` timestamp NULL DEFAULT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            ALTER TABLE `$tableName`
+              ADD KEY `target` (`target`),
+              ADD KEY `status` (`status`),
+              ADD KEY `status_target` (`status`,`target`);
             "
         );
 

@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Exceptions\AuthenticationException;
 use App\Exceptions\ValidationException;
+use App\Repositories\Enums\NotificationLogStatus;
+use App\Repositories\NotificationLogRepository;
 use App\Routing\Response\JsonResponse;
 use App\Services\RabbitMessageSender;
 
@@ -11,35 +13,46 @@ class SmsStatsController extends Controller
 {
     /**
      * @return JsonResponse
-     * @throws AuthenticationException|ValidationException
+     * @throws AuthenticationException
      */
     public function history(): JsonResponse
     {
         $this->auth();
-        $rabbitMessageSender = new RabbitMessageSender();
-        list($number, $message) = $this->getAndValidateParameters();
-        $rabbitMessageSender->send([
-            'target' => $number,
-            'message' => $message,
-        ]);
+
+        $wheres = $this->applyFilters();
+
+        $items = (new NotificationLogRepository())->latest(
+            $wheres,
+            min(request()->get('limit', 10), 100)
+        );
+
         return JsonResponse::from([
-            'status' => true
+            'status' => true,
+            'data' => [
+                'items' => $items
+            ]
         ]);
     }
 
     /**
      * @return array
-     * @throws ValidationException
      */
-    protected function getAndValidateParameters(): array
+    protected function applyFilters(): array
     {
-        if (!$number = arabic_persian_to_english(request()->get('number', ''))) {
-            throw new ValidationException(['please enter number']);
-        }
-        if (!$message = request()->get('message', '')) {
-            throw new ValidationException(['please enter message']);
+        $wheres = [];
+
+        if ($value = request()->get('number', '')) {
+            $wheres[] = ['target', 'LIKE', "%$value%"];
         }
 
-        return [$number, $message];
+        if ($value = request()->get('message', '')) {
+            $wheres[] = ['message', 'LIKE', "%$value%"];
+        }
+
+        if ($value = request()->get('status', '')) {
+            $wheres[] = ['status', '=', $value];
+        }
+
+        return $wheres;
     }
 }

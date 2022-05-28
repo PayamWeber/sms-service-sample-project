@@ -3,9 +3,9 @@
 namespace Unit\Repositories;
 
 use App\Repositories\Enums\NotificationLogStatus;
-use App\Repositories\Enums\NotificationLogType;
 use App\Repositories\NotificationLogRepository;
 use Carbon\Carbon;
+use PDOException;
 use Unit\BaseTest;
 use Unit\RefreshDatabase;
 
@@ -18,9 +18,7 @@ class NotificationLogRepositoryTest extends BaseTest
         $repository = new NotificationLogRepository();
 
         $repository->create([
-            'name' => 'test',
             'message' => 'test',
-            'type' => NotificationLogType::getFromTypeInQueue('sms')->value,
             'target' => '984987987',
             'status' => NotificationLogStatus::SUCCESS->value,
             'sent_at' => Carbon::now()->toDateTimeString(),
@@ -31,15 +29,13 @@ class NotificationLogRepositoryTest extends BaseTest
 
     public function testCreateNotWorking()
     {
-        $this->expectException(\PDOException::class);
+        $this->expectException(PDOException::class);
 
         $repository = new NotificationLogRepository();
 
         $repository->create([
             'fake_field' => 'test',
-            'name' => 'test',
             'message' => 'test',
-            'type' => NotificationLogType::getFromTypeInQueue('sms')->value,
             'target' => '984987987',
             'status' => NotificationLogStatus::SUCCESS->value,
             'sent_at' => Carbon::now()->toDateTimeString(),

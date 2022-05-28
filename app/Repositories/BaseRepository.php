@@ -17,6 +17,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     protected string $table = '';
 
+    /**
+     * @var string
+     */
+    protected string $primaryDateField = 'created_at';
+
     public function __construct()
     {
         $this->connection = new MysqlConnection();
@@ -42,7 +47,26 @@ abstract class BaseRepository implements BaseRepositoryInterface
             ['*'],
             [
                 ['id', '=', $id]
-            ]
+            ],
+            []
+        );
+    }
+
+    /**
+     * @param array $wheres
+     * @param int $limit
+     * @return bool|array
+     */
+    public function latest(array $wheres = [], int $limit = 10): bool|array
+    {
+        return $this->connection->select(
+            $this->table,
+            ['*'],
+            $wheres,
+            [
+                $this->primaryDateField => 'DESC'
+            ],
+            $limit
         );
     }
 }

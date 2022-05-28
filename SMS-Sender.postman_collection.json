@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "661025fc-845c-4193-be0c-d67f41c0121f",
+		"name": "SMS Sender",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sms Send",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "number",
+							"value": "09121111111",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "Test Message",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/sms/send",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"sms",
+						"send"
+					]
+				},
+				"description": "Fields:\n\n| Field | Type | Description |\n| --- | ----------- | ----------- |\n| type | number | 5=default,10=auction,15=tender |"
+			},
+			"response": []
+		},
+		{
+			"name": "Sms Stats History",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "limit",
+							"value": "10",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/sms/stats/history",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"sms",
+						"stats",
+						"history"
+					]
+				},
+				"description": "Fields:\n\n| Field | Type | Description |\n| --- | ----------- | ----------- |\n| type | number | 5=default,10=auction,15=tender |"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Save token\", function () {",
+							"    var jsonData = pm.response.json();",
+							"",
+							"    pm.environment.set(\"token\", jsonData.data.token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}api/login",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

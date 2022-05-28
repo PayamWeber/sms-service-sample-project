@@ -50,9 +50,10 @@ class MysqlConnection implements ConnectionInterface
      * @param array $columns
      * @param array $wheres
      * @param array $orderBy
+     * @param int $limit
      * @return bool|array
      */
-    public function select(string $table, array $columns = ['*'], array $wheres = [], array $orderBy = []): bool|array
+    public function select(string $table, array $columns = ['*'], array $wheres = [], array $orderBy = [], int $limit = 10): bool|array
     {
         $columns = implode(',', $columns);
 
@@ -72,9 +73,10 @@ class MysqlConnection implements ConnectionInterface
 
         $whereString = $wheres ? 'WHERE ' . implode(' AND ', $wheres) : '';
         $orderString = $orderBy ? 'ORDER BY ' . implode(', ', $orderBy) : '';
+        $limitString = $limit ? 'LIMIT ' . $limit : '';
 
         $statement = $this->db()->prepare(
-            "SELECT $columns FROM $table $whereString $orderString"
+            "SELECT $columns FROM $table $whereString $orderString $limitString"
         );
 
         if($wheres){
@@ -85,7 +87,7 @@ class MysqlConnection implements ConnectionInterface
 
         $statement->execute();
 
-        return $statement->fetchAll();
+        return $statement->fetchAll(PDO::FETCH_NAMED);
     }
 
     /**
@@ -97,7 +99,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function selectFirst(string $table, array $columns = ['*'], array $wheres = [], array $orderBy = []): bool|array
     {
-        $found = $this->select($table, $columns, $wheres, $orderBy);
+        $found = $this->select($table, $columns, $wheres, $orderBy, 10);
 
         return $found[0] ?? false;
     }
