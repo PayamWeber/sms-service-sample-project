@@ -29,7 +29,7 @@ class QueueNotificationItem
 
         $instance = new static();
         $instance->setMessage($decodedData['message'] ?? '');
-        $instance->setTo($decodedData['to'] ?? ($decodedData['mailto:to']));
+        $instance->setTo($decodedData['target'] ?? '');
 
         return $instance;
     }

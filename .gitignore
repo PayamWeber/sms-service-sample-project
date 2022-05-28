@@ -1,4 +1,6 @@
 .idea
 .env
+.env.testing
 .DS_Store
 vendor
+.phpunit.result.cache

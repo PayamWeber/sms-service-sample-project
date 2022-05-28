@@ -25,7 +25,7 @@ class MessageConsumer
             return;
         }
 
-        // Try to do this damn job. For you SnappDoctor
+        // Try to do this damn job
         $decodedData = QueueNotificationItem::fromQueueBody($message->getBody());
 
         try {
@@ -41,10 +41,14 @@ class MessageConsumer
             };
 
             // Send notification
-            $notificationSender
+            $send = $notificationSender
                 ->target($decodedData->getTo())
                 ->message($decodedData->getMessage())
                 ->send();
+
+            if(!$send){
+                $this->fail($message, $decodedData);
+            }
 
             $this->success($message, $decodedData);
         } catch (Throwable $exception) {
@@ -64,7 +68,7 @@ class MessageConsumer
 
         $this->logInDatabase($decodedData);
 
-        echo "SUCCESS: Message for \"" . $decodedData->getName() . "\" sent.\n";
+        echo "SUCCESS: Message for \"" . $decodedData->getTo() . "\" sent.\n";
     }
 
     /**
@@ -78,7 +82,7 @@ class MessageConsumer
 
         $this->logInDatabase($decodedData, false);
 
-        echo "FAIL: Whoops! Message for \"" . $decodedData->getName() . "\" failed.\n";
+        echo "FAIL: Whoops! Message for \"" . $decodedData->getTo() . "\" failed.\n";
     }
 
     /**

@@ -13,6 +13,10 @@ abstract class BaseTest extends TestCase
     {
         parent::setUp();
 
+        if (!file_exists(__DIR__ . '/../../.env.testing')) {
+            die("\n please make a .env.testing file\n");
+        }
+
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../../', '.env.testing');
         $dotenv->load();
 
