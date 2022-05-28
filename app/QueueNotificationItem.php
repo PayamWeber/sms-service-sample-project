@@ -6,10 +6,6 @@ use JetBrains\PhpStorm\Pure;
 
 class QueueNotificationItem
 {
-    /**
-     * @var string
-     */
-    protected string $name = '';
 
     /**
      * @var string
@@ -20,11 +16,6 @@ class QueueNotificationItem
      * @var string
      */
     protected string $to = '';
-
-    /**
-     * @var string
-     */
-    protected string $type = '';
 
     /**
      * Make instance from queue data
@@ -38,9 +29,7 @@ class QueueNotificationItem
 
         $instance = new static();
         $instance->setMessage($decodedData['message'] ?? '');
-        $instance->setName($decodedData['name'] ?? '');
         $instance->setTo($decodedData['to'] ?? ($decodedData['mailto:to']));
-        $instance->setType($decodedData['type'] ?? '');
 
         return $instance;
     }
@@ -52,23 +41,7 @@ class QueueNotificationItem
      */
     #[Pure] public function idValid(): bool
     {
-        return $this->getType() && $this->getName() && $this->getMessage() && $this->getTo();
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
+        return $this->getMessage() && $this->getTo();
     }
 
     /**
@@ -101,21 +74,5 @@ class QueueNotificationItem
     public function setTo(string $to): void
     {
         $this->to = $to;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
     }
 }

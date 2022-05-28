@@ -4,10 +4,6 @@ namespace App\NotificationSenders;
 
 abstract class BaseNotification implements NotificationInterface
 {
-    /**
-     * @var string
-     */
-    protected string $name;
 
     /**
      * @var string
@@ -18,24 +14,6 @@ abstract class BaseNotification implements NotificationInterface
      * @var string
      */
     protected string $target;
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return BaseNotification
-     */
-    public function name(string $name): BaseNotification
-    {
-        $this->name = $name;
-        return $this;
-    }
 
     /**
      * @param string $message

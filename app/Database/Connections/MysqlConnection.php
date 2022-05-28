@@ -46,6 +46,72 @@ class MysqlConnection implements ConnectionInterface
     }
 
     /**
+     * @param string $table
+     * @param array $columns
+     * @param array $wheres
+     * @param array $orderBy
+     * @return bool|array
+     */
+    public function select(string $table, array $columns = ['*'], array $wheres = [], array $orderBy = []): bool|array
+    {
+        $columns = implode(',', $columns);
+
+        if($wheres){
+            $whereValues = [];
+            foreach ($wheres as &$where){
+                $whereValues[] = $where[2];
+                $where = $where[0] . ' ' . $where[1] . ' ?';
+            }
+        }
+
+        if($orderBy){
+            foreach ($orderBy as $name => &$order){
+                $order = $name . ' ' . $order;
+            }
+        }
+
+        $whereString = $wheres ? 'WHERE ' . implode(' AND ', $wheres) : '';
+        $orderString = $orderBy ? 'ORDER BY ' . implode(', ', $orderBy) : '';
+
+        $statement = $this->db()->prepare(
+            "SELECT $columns FROM $table $whereString $orderString"
+        );
+
+        if($wheres){
+            foreach ($whereValues as $key => $value){
+                $statement->bindValue($key+1, $value);
+            }
+        }
+
+        $statement->execute();
+
+        return $statement->fetchAll();
+    }
+
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param array $wheres
+     * @param array $orderBy
+     * @return bool|array
+     */
+    public function selectFirst(string $table, array $columns = ['*'], array $wheres = [], array $orderBy = []): bool|array
+    {
+        $found = $this->select($table, $columns, $wheres, $orderBy);
+
+        return $found[0] ?? false;
+    }
+
+    /**
+     * @param string $query
+     * @return array|bool
+     */
+    public function raw(string $query): array|bool
+    {
+        return $this->db->query($query)->fetchAll();
+    }
+
+    /**
      * @return void
      */
     protected function initConnection(): void

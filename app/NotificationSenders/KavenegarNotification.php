@@ -5,7 +5,7 @@ namespace App\NotificationSenders;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-class SmsNotification extends BaseNotification
+class KavenegarNotification extends BaseNotification
 {
     /**
      * @return bool

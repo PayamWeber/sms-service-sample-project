@@ -3,7 +3,7 @@
 namespace App;
 
 use App\NotificationSenders\EmailNotification;
-use App\NotificationSenders\SmsNotification;
+use App\NotificationSenders\KavenegarNotification;
 use App\Repositories\Enums\NotificationLogStatus;
 use App\Repositories\Enums\NotificationLogType;
 use App\Repositories\NotificationLogRepository;
@@ -36,14 +36,12 @@ class MessageConsumer
             }
 
             // Get Notification sender
-            $notificationSender = match ($decodedData->getType()) {
-                'email' => new EmailNotification(),
-                'sms' => new SmsNotification()
+            $notificationSender = match ($_ENV['NOTIFICATION_DRIVER'] ?? 'kavenegar') {
+                'kavenegar' => new KavenegarNotification()
             };
 
             // Send notification
             $notificationSender
-                ->name($decodedData->getName())
                 ->target($decodedData->getTo())
                 ->message($decodedData->getMessage())
                 ->send();
@@ -93,9 +91,7 @@ class MessageConsumer
         $notificationLogRepo = new NotificationLogRepository();
 
         $notificationLogRepo->create([
-            'name' => $decodedData->getName(),
             'message' => $decodedData->getMessage(),
-            'type' => NotificationLogType::getFromTypeInQueue($decodedData->getType())->value,
             'target' => $decodedData->getTo(),
             'status' => $success ? NotificationLogStatus::SUCCESS->value : NotificationLogStatus::FAIL->value,
             'sent_at' => Carbon::now()->toDateTimeString(),

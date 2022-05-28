@@ -2,7 +2,7 @@
 
 namespace Unit\NotificationSenders;
 
-use App\NotificationSenders\SmsNotification;
+use App\NotificationSenders\KavenegarNotification;
 use Unit\BaseTest;
 use Unit\RefreshDatabase;
 
@@ -12,7 +12,7 @@ class SmsNotificationTest extends BaseTest
 
     public function testSend()
     {
-        $result = (new SmsNotification())
+        $result = (new KavenegarNotification())
             ->name('test')
             ->target('test@test.com')
             ->message('test')

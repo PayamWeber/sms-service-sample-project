@@ -28,9 +28,9 @@ class Route
 
     /**
      * This is Singleton
-     * @return $this|null
+     * @return $this
      */
-    public static function getInstance(): ?self
+    public static function getInstance(): self
     {
         if (self::$instance instanceof self) {
             return self::$instance;
@@ -95,11 +95,11 @@ class Route
                         echo JsonResponse::from($response)->render();
                     }
                 }
-                break;
-            }else{
-                throw new NotFoundException();
+                return;
             }
         }
+
+        throw new NotFoundException();
     }
 
     /**
