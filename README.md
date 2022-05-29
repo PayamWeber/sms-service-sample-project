@@ -6,7 +6,7 @@ Here's an app for sending sms to users. This app needs RabbitMQ, Mysql, php8.1, 
 
 First you need to install mysql, php8.1, composer and rabbitmq by yourself or by using docker in "laradock" folder. More info on how to run this laradock see details down bellow.
 
-Then modify .env file with your configuration. Here's an example:
+Then modify make .env file based on .env.example and modify your configuration. Here's an example:
 
 ```dotenv
 DEBUGGING=false
@@ -79,7 +79,25 @@ For testing, you need to do some steps
 
 ## Docker
 * First you need to go "laradock" folder.
-* Then .env file in that folder for your needs. Most probably change ports.
-* Run ``docker-compose up -d rabbitmq mysql phpmyadmin workspace nginx php-fpm`` command
+* Then copy `.env.example` file to `.env` file in that folder and change it for your needs. These are the most important things you want to change:
+* Change these ports to not get conflicted with your existing apps
+```dotenv
+WORKSPACE_SSH_PORT=9762
+WORKSPACE_BROWSERSYNC_HOST_PORT=9760
+WORKSPACE_BROWSERSYNC_UI_HOST_PORT=9761
+WORKSPACE_VUE_CLI_SERVE_HOST_PORT=9756
+WORKSPACE_VUE_CLI_UI_HOST_PORT=9758
+WORKSPACE_ANGULAR_CLI_SERVE_HOST_PORT=9759
+PHP_FPM_XDEBUG_PORT=9763
+NGINX_HOST_HTTP_PORT=9751
+NGINX_HOST_HTTPS_PORT=9752
+MYSQL_PORT=9753
+RABBITMQ_NODE_HOST_PORT=5672
+RABBITMQ_MANAGEMENT_HTTP_HOST_PORT=15672
+RABBITMQ_MANAGEMENT_HTTPS_HOST_PORT=15671
+RABBITMQ_WEB_STOMP_HOST_PORT=15674
+PMA_PORT=9754
+```
+* Then run ``docker-compose up -d rabbitmq mysql phpmyadmin workspace nginx php-fpm`` command
 
-For going into workspace container and running "php artisan" and "composer" commands you can execute ``./bash.sh`` script inside laradock folder.
+For going into workspace container and running "php" and "composer" commands you can execute ``./bash.sh`` script inside laradock folder.
